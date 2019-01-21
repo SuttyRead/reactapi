@@ -1,24 +1,36 @@
-import {Component} from 'react';
-import React from "react";
+import React, {Component} from 'react';
+import UserService from "./user-service";
+import {Link} from "react-router-dom";
 
 class User extends Component {
 
+    userService = new UserService();
+
     render() {
-        const {user} = this.props;
         return (
             <tr>
-                    <td>{user.login}</td>
-                    <td>{user.firstName}</td>
-                    <td>{user.lastName}</td>
-                    <td>{user.birthday}</td>
-                    <td>{user.role}</td>
-                    <td>
-                        <button type="submit" className="btn btn-primary">Edit</button>
-                        <button type="submit" className="btn btn-primary">Delete</button>
-                    </td>
+                <td>{this.props.user.login}</td>
+                <td>{this.props.user.firstName}</td>
+                <td>{this.props.user.lastName}</td>
+                <td>{this.props.user.birthday}</td>
+                <td>{this.props.user.role.name}</td>
+                <td>
+                    <Link role="button" className="btn btn-primary" to={`/edit/${this.props.user.id}`}>Edit</Link>
+                    <button type="submit" onClick={() => this.deleteUser()} className="btn btn-primary">Delete</button>
+                </td>
             </tr>
         );
     }
+
+    deleteUser() {
+        if (window.confirm('Delete ' + this.props.user.login + '?')) {
+            this.userService.delete(this.props.user.id);
+        }
+    }
+
 }
 
+
+
 export default User;
+

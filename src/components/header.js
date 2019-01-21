@@ -1,7 +1,15 @@
 import React, {Component} from 'react';
 import {Link} from "react-router-dom";
+import UserService from "./user-service";
 
 class Header extends Component {
+
+    state = {
+        login: sessionStorage.getItem('login')
+    };
+
+    userService = new UserService();
+
     render() {
         return (<nav className="navbar navbar-expand-lg navbar-light bg-light">
             <Link className="navbar-brand" to="/">React</Link>
@@ -31,8 +39,9 @@ class Header extends Component {
                         <Link className="nav-link" to="/admin">Admin</Link>
                     </li>
                 </ul>
+                {this.state.login},
+                <Link onClick={() => this.userService.logout()} to="/login"> Logout</Link>
 
-                <Link to="/logout"> Logout</Link>
             </div>
         </nav>);
     }

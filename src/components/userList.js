@@ -1,37 +1,27 @@
-import {Component} from 'react';
-import User from "./user";
-import React from "react";
-import {AxiosInstance as axios} from "axios";
+import React, {Component} from 'react';
 import UserService from "./user-service";
+import User from "./user";
 
 class UserList extends Component {
 
-    // userService = new UserService();
 
-    state = {
-        users: '',
+    constructor(props) {
+        super(props);
+        this.state = {users: []};
+    }
 
-    };
-
-    constructor() {
-        super();
-        UserService.getAllUsers().then((value => {
+    componentDidMount() {
+        this.userService.getAllUsers().then(value => {
             this.setState({
                 users: value
             })
-        }));
+        })
     }
 
-    // componentDidMount() {
-    //
-    // }
+    userService = new UserService();
 
     render() {
-
-        // const {users} = this.state;
-        // console.log(users);
         return (
-
             <table className="table table-hover table-bordered">
                 <thead>
                 <tr>
@@ -44,52 +34,10 @@ class UserList extends Component {
                 </tr>
                 </thead>
                 <tbody>
+                {this.state.users.map(user =>
+                    <User user={user} key={user.id}/>
+                )}
                 </tbody>
-                {/*{this.users}*/}
-                {/*{users.map((user) =>*/}
-                    {/*<tr>*/}
-                        {/*<td>*/}
-                            {/*{user.login}*/}
-                        {/*</td>*/}
-                        {/*<td>*/}
-                            {/*{user.email}*/}
-                        {/*</td>*/}
-                        {/*<td>*/}
-                            {/*{user.firstName}*/}
-                        {/*</td>*/}
-                        {/*<td>*/}
-                            {/*{user.lastName}*/}
-                        {/*</td>*/}
-                        {/*<td>*/}
-                            {/*/!*{this.calculateAge(user.birthday)}*!/*/}
-                        {/*</td>*/}
-                        {/*<td>*/}
-                            {/*/!*{user.role.name == 'ROLE_ADMIN' ? "admin" : "user"}*!/*/}
-                        {/*</td>*/}
-                        {/*<td>*/}
-                            {/*/!*<Button onClick={() => this.handleDelete(user.id)}>Delete</Button>*!/*/}
-                            {/*/!*<Button onClick={() => this.handleEdit(user.id)}>Edit</Button>*!/*/}
-                        {/*</td>*/}
-                    {/*</tr>*/}
-                {/*)}*/}
-
-
-                {/*{this.users.map((user: User) =>*/}
-                {/*<User  user={user}/>)}*/}
-
-                {/*<User user={this.users[0]} />*/}
-                {/*<UserElement/>*/}
-                {/*<User user={this.users}/>*/}
-                {/*<User user={this.users}/>*/}
-                {/*<User user={{*/}
-                {/*login: 'login',*/}
-                {/*firstName: 'firstName',*/}
-                {/*lastName: 'lastName',*/}
-                {/*birthday: 'birthday',*/}
-                {/*age: 'age',*/}
-                {/*role: 'role'*/}
-                {/*}}/>*/}
-
             </table>
 
         );

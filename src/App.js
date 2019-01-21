@@ -16,7 +16,7 @@ class App extends Component {
             <BrowserRouter>
                 <div>
                     <Header/>
-                    <Route path="/edit" component={Edit}/>
+                    <Route path="/edit/:id" component={Edit}/>
                     <Route path="/add" component={Add}/>
                     <Route path="/user" component={UserPage}/>
                     <Route path="/registration" component={Registration}/>
