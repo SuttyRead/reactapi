@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import UserService from "./user-service";
+import UserService from "../services/user-service";
 import {Redirect} from "react-router-dom";
+import history from "../utils/history";
 
 class Login extends Component {
 
@@ -12,7 +13,8 @@ class Login extends Component {
                 login: '',
                 password: ''
             },
-            role: sessionStorage.getItem('role')
+            role: sessionStorage.getItem('role'),
+            incorrectData: false
         };
 
         this.OnChangeLoginLogIn = this.OnChangeLoginLogIn.bind(this);
@@ -22,20 +24,18 @@ class Login extends Component {
 
     userService = new UserService();
 
-
     render() {
-        if (this.state.role === "ADMIN") {
-            return (
-                <Redirect to="/admin"/>
-            )
-        } else if (this.state.role === "USER") {
-            return (
-                <Redirect to="/user"/>
-            )
+
+        if (this.userService.loggedIn()) {
+            return <Redirect to="/home"/>
         }
+
         return (
             <div>
                 <div className="col-md-2">
+
+                    {this.state.incorrectData ?
+                        <div className="alert alert-danger" role="alert">Login or password incorrect</div> : null}
 
                     {/*<div className="alert alert-danger" role="alert">Login or password incorrect</div>*/}
 
@@ -64,10 +64,15 @@ class Login extends Component {
             sessionStorage.setItem('token', data.token);
             sessionStorage.setItem('login', data.login);
             sessionStorage.setItem('role', data.role.name);
+        }).catch(e => {
+            if (e) {
+                this.setState({
+                    incorrectData: true
+                });
+            }
         });
+        history.push("/home");
         event.preventDefault();
-        this.props.history.push("/admin");
-        // this.props.history.reload("/admin");
     }
 
     OnChangePasswordLogIn(e) {

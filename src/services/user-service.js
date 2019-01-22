@@ -1,4 +1,4 @@
-import axios from "axios";
+import history from "../utils/history";
 
 export default class UserService {
 
@@ -35,7 +35,7 @@ export default class UserService {
                 "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS, PUT"
             },
             body: JSON.stringify(loginForm)
-        })
+        });
     }
 
     add(userForm) {
@@ -44,6 +44,17 @@ export default class UserService {
             headers: {
                 "Content-Type": "application/json",
                 'Authorization': 'Basic YWRtaW46YWRtaW4='
+            },
+            body: JSON.stringify(userForm)
+        });
+
+    }
+
+    registration(userForm) {
+        return fetch('http://10.10.103.100:8050/registration', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(userForm)
         });
@@ -74,8 +85,16 @@ export default class UserService {
     }
 
     logout() {
-        console.log('logout');
         sessionStorage.clear();
+
+    }
+
+    loggedIn() {
+        return sessionStorage.getItem('token');
+    }
+
+    isAdmin() {
+        return sessionStorage.getItem('role') === "ADMIN";
     }
 
 }

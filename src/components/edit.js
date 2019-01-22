@@ -1,6 +1,7 @@
 import {Component} from 'react';
 import React from "react";
-import UserService from "./user-service";
+import UserService from "../services/user-service";
+import {Redirect} from "react-router-dom";
 
 class Edit extends Component {
 
@@ -45,7 +46,14 @@ class Edit extends Component {
     }
 
     render() {
-        console.log(this.state.user);
+
+        if (!this.userService.loggedIn()) {
+            return <Redirect to="/login"/>
+        }
+        if (!this.userService.isAdmin()) {
+            return <Redirect to="/home"/>
+        }
+
         return (
             <div className="col-md-2">
                 <h2 className="text-center">Edit User</h2>

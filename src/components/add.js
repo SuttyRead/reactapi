@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import UserService from "./user-service";
+import UserService from "../services/user-service";
+import {Redirect} from "react-router-dom";
 
 class Add extends Component {
 
@@ -30,6 +31,14 @@ class Add extends Component {
     userService = new UserService();
 
     render() {
+
+        if (!this.userService.loggedIn()) {
+            return <Redirect to="/login"/>
+        }
+        if (!this.userService.isAdmin()) {
+            return <Redirect to="/home"/>
+        }
+
         return (
             <div className="col-md-2">
                 <h2 className="text-center">Add User</h2>
@@ -113,14 +122,6 @@ class Add extends Component {
                                onChange={this.OnChangeBirthdayAdd}
                                className="form-control"
                                id="birthday" required/>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="role">Role:</label>
-                        <select name="role" id="role" className="form-control">
-                            <option>ADMIN</option>
-                            <option>USER</option>
-                        </select>
                     </div>
 
                     <button className="btn btn-success">Save</button>

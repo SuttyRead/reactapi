@@ -4,13 +4,17 @@ import Header from "./components/header";
 import {BrowserRouter, Route} from "react-router-dom"
 import Edit from "./components/edit";
 import Add from "./components/add";
-import UserPage from "./components/userPage";
 import Registration from "./components/registration";
 import AdminPage from "./components/adminPage";
 import Login from "./components/login";
 import Main from "./components/main";
+import UserService from "./services/user-service";
+import UserPage from "./components/userPage";
 
 class App extends Component {
+
+    userService = new UserService();
+
     render() {
         return (
             <BrowserRouter>
@@ -18,11 +22,10 @@ class App extends Component {
                     <Header/>
                     <Route path="/edit/:id" component={Edit}/>
                     <Route path="/add" component={Add}/>
-                    <Route path="/user" component={UserPage}/>
                     <Route path="/registration" component={Registration}/>
-                    <Route path="/admin" component={AdminPage}/>
                     <Route path="/login" component={Login}/>
-                    <Route path="/" component={Main} exact />
+                    <Route path="/home" render={() => (this.userService.isAdmin() ? (<AdminPage/>) : (<UserPage/>))}/>
+                    <Route path="/" component={Main} exact/>
                 </div>
             </BrowserRouter>
         );

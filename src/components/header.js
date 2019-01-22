@@ -1,12 +1,8 @@
 import React, {Component} from 'react';
 import {Link} from "react-router-dom";
-import UserService from "./user-service";
+import UserService from "../services/user-service";
 
 class Header extends Component {
-
-    state = {
-        login: sessionStorage.getItem('login')
-    };
 
     userService = new UserService();
 
@@ -32,14 +28,8 @@ class Header extends Component {
                     <li className="nav-item">
                         <Link className="nav-link" to="/registration">Registration</Link>
                     </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/user">User</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/admin">Admin</Link>
-                    </li>
                 </ul>
-                {this.state.login},
+                {sessionStorage.getItem('login')},
                 <Link onClick={() => this.userService.logout()} to="/login"> Logout</Link>
 
             </div>
