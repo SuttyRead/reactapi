@@ -2,37 +2,31 @@ import history from "../utils/history";
 
 export default class UserService {
 
-    static async getResource(url) {
-        const res = await fetch(url, {
-            headers: {
-                "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': '*',
-                'Authorization': 'Basic YWRtaW46YWRtaW4='
-            }
-        });
-        return await res.json();
-    }
+    header = {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': '*',
+            'Authorization': `Basic ${sessionStorage.getItem('token')}`
+        }
+    };
 
     getAllUsers() {
-        return UserService.getResource('http://10.10.103.100:8050/users')
+        return fetch('http://10.10.103.100:8050/users', this.header);
     }
 
     getUserById(id) {
-        return UserService.getResource('http://10.10.103.100:8050/users/' + id, {
-            headers: {
-                "Content-Type": "application/json",
-            }
-        });
+        return fetch('http://10.10.103.100:8050/users/' + id, this.header);
+    }
+
+    getUserByLogin(login) {
+        return fetch('http://10.10.103.100:8050/checkLogin/' + login, this.header);
     }
 
     login(loginForm) {
         return fetch('http://10.10.103.100:8050/login', {
             method: 'POST',
             headers: {
-                "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': '*',
-                "Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
-                "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS, PUT"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(loginForm)
         });
@@ -40,11 +34,8 @@ export default class UserService {
 
     add(userForm) {
         return fetch('http://10.10.103.100:8050/users', {
+            headers: this.header.headers,
             method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': 'Basic YWRtaW46YWRtaW4='
-            },
             body: JSON.stringify(userForm)
         });
 
@@ -62,15 +53,9 @@ export default class UserService {
     }
 
     edit(user) {
-        return fetch('http://10.10.103.100:8050/users/' + user.id, user, {
+        return fetch('http://10.10.103.100:8050/users/' + user.id, {
             method: 'PUT',
-            headers: {
-                "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': '*',
-                "Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
-                "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS, PUT",
-                'Authorization': 'Basic YWRtaW46YWRtaW4='
-            },
+            headers: this.header.headers,
             body: JSON.stringify(user)
         });
     }
@@ -78,9 +63,7 @@ export default class UserService {
     delete(id) {
         return fetch('http://10.10.103.100:8050/users/' + id, {
             method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-            }
+            headers: this.header.headers
         });
     }
 

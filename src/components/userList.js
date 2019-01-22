@@ -11,7 +11,7 @@ class UserList extends Component {
     }
 
     componentDidMount() {
-        this.userService.getAllUsers().then(value => {
+        this.userService.getAllUsers().then(e => e.json()).then(value => {
             this.setState({
                 users: value
             })

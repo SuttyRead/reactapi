@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import Header from "./components/header";
-import {BrowserRouter, Route} from "react-router-dom"
+import {BrowserRouter, Route, Switch} from "react-router-dom"
 import Edit from "./components/edit";
 import Add from "./components/add";
 import Registration from "./components/registration";
@@ -20,12 +20,16 @@ class App extends Component {
             <BrowserRouter>
                 <div>
                     <Header/>
-                    <Route path="/edit/:id" component={Edit}/>
-                    <Route path="/add" component={Add}/>
-                    <Route path="/registration" component={Registration}/>
-                    <Route path="/login" component={Login}/>
-                    <Route path="/home" render={() => (this.userService.isAdmin() ? (<AdminPage/>) : (<UserPage/>))}/>
-                    <Route path="/" component={Main} exact/>
+                    <Switch>
+                        <Route path="/edit/:id" component={Edit}/>
+                        <Route path="/add" component={Add}/>
+                        <Route path="/registration" component={Registration}/>
+                        <Route path="/login" component={Login}/>
+                        <Route path="/home"
+                               render={() => (this.userService.isAdmin() ? (<AdminPage/>) : (<UserPage/>))}/>
+                        <Route path="/" component={Main} exact/>
+                        <Route render={() => <h2>Page not found</h2>}/>
+                    </Switch>
                 </div>
             </BrowserRouter>
         );

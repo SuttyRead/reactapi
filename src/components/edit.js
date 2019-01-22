@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import React from "react";
 import UserService from "../services/user-service";
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 
 class Edit extends Component {
 
@@ -36,7 +36,7 @@ class Edit extends Component {
 
     componentDidMount(): void {
         const id = this.props.match.params.id;
-        this.userService.getUserById(id).then(value => {
+        this.userService.getUserById(id).then(e => e.json()).then(value => {
             console.log(value);
             this.setState({
                 user: value
@@ -64,7 +64,7 @@ class Edit extends Component {
                         <input type="text" placeholder="Enter login" name="login" className="form-control" id="login"
                                defaultValue={this.state.user.login}
                                onChange={this.OnChangeLoginEdit}
-                               pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20} $" readOnly required/>
+                               pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$" readOnly required/>
                     </div>
                     {/*<div className="alert alert-danger" role="alert">*/}
                     {/*Uppercase and lowercase letter.*/}
@@ -144,7 +144,8 @@ class Edit extends Component {
                     </div>
 
                     <button className="btn btn-success">Save</button>
-                    <button className="btn btn-success">Cancel</button>
+                    <Link role="button" className="btn btn-success" to="/home">Cancel</Link>
+                    {/*<button onClick= className="btn btn-success">Cancel</button>*/}
 
                 </form>
 
