@@ -7,6 +7,7 @@ class Header extends Component {
     userService = new UserService();
 
     render() {
+        const login = sessionStorage.getItem('login');
         return (<nav className="navbar navbar-expand-lg navbar-light bg-light">
             <Link className="navbar-brand" to="/">React</Link>
             <button className="navbar-toggler" type="button" data-toggle="collapse"
@@ -19,19 +20,18 @@ class Header extends Component {
                     <li className="nav-item">
                         <Link className="nav-link" to="/">Main</Link>
                     </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/home">Home</Link>
-                    </li>
-                    <li className="nav-item">
+                    {login ? (<li className="nav-item">
+                        <Link className="nav-link" to="/registration">Home</Link>
+                    </li>) : null}
+                    {login ? null : (<li className="nav-item">
                         <Link className="nav-link" to="/login">Login</Link>
-                    </li>
-                    <li className="nav-item">
+                    </li>)}
+                    {login ? null : (<li className="nav-item">
                         <Link className="nav-link" to="/registration">Registration</Link>
-                    </li>
+                    </li>)}
                 </ul>
-                {sessionStorage.getItem('login')},
-                <Link onClick={() => this.userService.logout()} to="/login"> Logout</Link>
-
+                {login ? <div>{login}, <Link onClick={() => this.userService.logout()} to="/login"> Logout</Link>
+                </div> : null}
             </div>
         </nav>);
     }
