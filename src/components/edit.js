@@ -3,6 +3,7 @@ import React from "react";
 import UserService from "../services/user-service";
 import {Link, Redirect} from "react-router-dom";
 import {dateValidator, emailValidator, nameValidator, passwordValidator} from "../utils/validator";
+// import history from "../utils/history";
 
 class Edit extends Component {
 
@@ -12,7 +13,6 @@ class Edit extends Component {
         this.OnChangeEmailEdit = this.OnChangeEmailEdit.bind(this);
         this.OnChangeBirthdayEdit = this.OnChangeBirthdayEdit.bind(this);
         this.OnChangePasswordEdit = this.OnChangePasswordEdit.bind(this);
-        // this.OnChangeLoginEdit = this.OnChangeLoginEdit.bind(this);
         this.OnChangeFirstNameEdit = this.OnChangeFirstNameEdit.bind(this);
         this.OnChangeLastNameEdit = this.OnChangeLastNameEdit.bind(this);
         this.OnChangeRoleEdit = this.OnChangeRoleEdit.bind(this);
@@ -73,10 +73,6 @@ class Edit extends Component {
                                value={this.state.user.login}
                                pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$" readOnly required/>
                     </div>
-                    {/*<div className="alert alert-danger" role="alert">*/}
-                    {/*Uppercase and lowercase letter.*/}
-                    {/*Must be 2-20 characters. Without specifically characters #,$,% and so on. For example SuttyRead*/}
-                    {/*</div>*/}
 
                     <div className="form-group">
                         <label htmlFor="password">Password:</label>
@@ -165,13 +161,13 @@ class Edit extends Component {
         );
     }
 
-    // OnChangeLoginEdit(e) {
-    //     const user = this.state.user;
-    //     user.login = e.target.value;
-    //     this.setState({
-    //         user: user
-    //     })
-    // }
+    OnSubmitEdit(event) {
+        event.preventDefault();
+        this.userService.edit(this.state.user);
+        setTimeout(() => {
+            this.props.history.push("/home", {edited: true});
+        }, 100);
+    }
 
     OnChangePasswordEdit(e) {
         const user = this.state.user;
@@ -226,12 +222,6 @@ class Edit extends Component {
             errorForm: errorForm,
             user: user
         });
-    }
-
-    OnSubmitEdit(event) {
-        this.userService.edit(this.state.user);
-        console.log(this.state.user);
-        event.preventDefault();
     }
 
     OnChangeRoleEdit(e) {

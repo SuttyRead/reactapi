@@ -59,32 +59,38 @@ class Login extends Component {
     OnSubmitLogin(event) {
         event.preventDefault();
         this.userService.login(this.state.loginForm).then(e => e.json()).then(data => {
-            sessionStorage.setItem('token', data.token);
-            sessionStorage.setItem('login', data.login);
-            sessionStorage.setItem('role', data.role.name);
-        }).catch(e => {
-            if (e) {
+            if (data.login === null) {
                 this.setState({
                     incorrectData: true
                 });
+                return;
+            } else {
+                this.setState({
+                    incorrectData: false
+                });
             }
+            sessionStorage.setItem('token', data.token);
+            sessionStorage.setItem('login', data.login);
+            sessionStorage.setItem('role', data.role.name);
         });
         setTimeout(() => {
-            this.props.history.push("/home");
-        }, 500);
-    }
-
-    OnChangePasswordLogIn(e) {
-        const loginForm = this.state.loginForm;
-        loginForm.password = e.target.value;
-        this.setState({
-            loginForm: loginForm
-        })
+            if (!this.state.incorrectData) {
+                this.props.history.push("/home");
+            }
+        }, 300);
     }
 
     OnChangeLoginLogIn(e) {
         const loginForm = this.state.loginForm;
         loginForm.login = e.target.value;
+        this.setState({
+            loginForm: loginForm
+        })
+    }
+
+    OnChangePasswordLogIn(e) {
+        const loginForm = this.state.loginForm;
+        loginForm.password = e.target.value;
         this.setState({
             loginForm: loginForm
         })

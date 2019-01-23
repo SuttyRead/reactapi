@@ -75,6 +75,11 @@ class Registration extends Component {
                         Must be 2-20 characters. Without specifically characters #,$,% and so on. For example SuttyRead
                     </div>) : null}
 
+                    {!this.state.errorForm.loginIsAvailable ? (<div className="alert alert-danger" role="alert">
+                        This login already exist!
+                    </div>) : null}
+
+
                     <div className="form-group">
                         <label htmlFor="password">Password:</label>
                         <input type="password" placeholder="Enter password" name="password"
@@ -173,8 +178,11 @@ class Registration extends Component {
     }
 
     OnSubmitRegistration(event) {
-        this.userService.registration(this.state.userForm);
         event.preventDefault();
+        this.userService.registration(this.state.userForm);
+        setTimeout(() => {
+            this.props.history.push("/login");
+        }, 100);
     }
 
     OnChangeLoginRegistration(e) {
@@ -182,6 +190,7 @@ class Registration extends Component {
         userForm.login = e.target.value;
         let errorForm = this.state.errorForm;
         errorForm.login = loginValidator(e.target.value);
+        errorForm.loginIsAvailable = this.loginIsAvailable(e.target.value);
         this.setState({
             errorForm: errorForm,
             userForm: userForm
@@ -262,8 +271,24 @@ class Registration extends Component {
 
     }
 
+    loginIsAvailable(login) {
+        this.userService.getUserByLogin(login).then(e => e.json()).then(data => {
+            let errorForm = this.state.errorForm;
+            if (data.loginIsAvailable) {
+                errorForm.loginIsAvailable = true;
+                this.setState({
+                    errorForm: errorForm
+                })
+            } else {
+                errorForm.loginIsAvailable = false;
+                this.setState({
+                    errorForm: errorForm
+                })
+            }
+        });
+    }
+
     hasError() {
-        console.log(this.state.reCaptcha);
         const errorForm = this.state.errorForm;
         return !(errorForm.login && errorForm.password && errorForm.confirmPassword &&
             errorForm.email && errorForm.firstName && errorForm.lastName &&

@@ -1,8 +1,13 @@
-import history from "../utils/history";
-
 export default class UserService {
 
-    header = {
+    headerForGuest = {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': '*'
+        }
+    };
+
+    headerForLoggedInUser = {
         headers: {
             "Content-Type": "application/json",
             'Access-Control-Allow-Origin': '*',
@@ -11,30 +16,28 @@ export default class UserService {
     };
 
     getAllUsers() {
-        return fetch('http://10.10.103.100:8050/users', this.header);
+        return fetch('http://10.10.103.100:8050/users', this.headerForLoggedInUser);
     }
 
     getUserById(id) {
-        return fetch('http://10.10.103.100:8050/users/' + id, this.header);
+        return fetch('http://10.10.103.100:8050/users/' + id, this.headerForLoggedInUser);
     }
 
     getUserByLogin(login) {
-        return fetch('http://10.10.103.100:8050/checkLogin/' + login, this.header);
+        return fetch('http://10.10.103.100:8050/checkLogin/' + login, this.headerForGuest);
     }
 
     login(loginForm) {
         return fetch('http://10.10.103.100:8050/login', {
             method: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: this.headerForGuest.headers,
             body: JSON.stringify(loginForm)
         });
     }
 
     add(userForm) {
         return fetch('http://10.10.103.100:8050/users', {
-            headers: this.header.headers,
+            headers: this.headerForLoggedInUser.headers,
             method: 'POST',
             body: JSON.stringify(userForm)
         });
@@ -44,18 +47,15 @@ export default class UserService {
     registration(userForm) {
         return fetch('http://10.10.103.100:8050/registration', {
             method: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: this.headerForGuest.headers,
             body: JSON.stringify(userForm)
         });
-
     }
 
     edit(user) {
         return fetch('http://10.10.103.100:8050/users/' + user.id, {
             method: 'PUT',
-            headers: this.header.headers,
+            headers: this.headerForLoggedInUser.headers,
             body: JSON.stringify(user)
         });
     }
@@ -63,13 +63,12 @@ export default class UserService {
     delete(id) {
         return fetch('http://10.10.103.100:8050/users/' + id, {
             method: 'DELETE',
-            headers: this.header.headers
+            headers: this.headerForLoggedInUser.headers
         });
     }
 
     logout() {
         sessionStorage.clear();
-
     }
 
     loggedIn() {
@@ -77,7 +76,6 @@ export default class UserService {
     }
 
     isAdmin() {
-        console.log(sessionStorage.getItem('role'));
         return sessionStorage.getItem('role') === "ADMIN";
     }
 

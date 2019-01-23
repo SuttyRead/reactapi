@@ -6,13 +6,15 @@ import UserList from "./userList";
 
 class HomePage extends Component {
     render() {
+
         if (!sessionStorage.getItem('token')) {
             return <Redirect to="/login"/>
         }
+        // console.log(this.props.history.location.state.edited);
         if (sessionStorage.getItem('role') === 'ADMIN') {
             return <div>
                 <Link to="/add">Add User</Link>
-                <UserList/>
+                <UserList history={this.props.history} />
             </div>;
         } else {
             return (

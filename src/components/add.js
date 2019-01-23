@@ -75,6 +75,10 @@ class Add extends Component {
                         Must be 2-20 characters. Without specifically characters #,$,% and so on. For example SuttyRead
                     </div>) : null}
 
+                    {!this.state.errorForm.loginIsAvailable ? (<div className="alert alert-danger" role="alert">
+                        This login already exist!
+                    </div>) : null}
+
                     <div className="form-group">
                         <label htmlFor="password">Password:</label>
                         <input type="password" placeholder="Enter password" name="password"
@@ -165,11 +169,20 @@ class Add extends Component {
             </div>);
     }
 
+    OnSubmitAdd(event) {
+        event.preventDefault();
+        this.userService.add(this.state.userForm);
+        setTimeout(() => {
+            this.props.history.push("/home", {created: true});
+        }, 100);
+    }
+
     OnChangeLoginAdd(e) {
         const userForm = this.state.userForm;
         userForm.login = e.target.value;
         let errorForm = this.state.errorForm;
         errorForm.login = loginValidator(e.target.value);
+        errorForm.loginIsAvailable = this.loginIsAvailable(e.target.value);
         this.setState({
             errorForm: errorForm,
             userForm: userForm
@@ -243,16 +256,28 @@ class Add extends Component {
         });
     }
 
-    OnSubmitAdd(event) {
-        this.userService.add(this.state.userForm);
-        event.preventDefault();
+    loginIsAvailable(login) {
+        this.userService.getUserByLogin(login).then(e => e.json()).then(data => {
+            let errorForm = this.state.errorForm;
+            if (data.loginIsAvailable) {
+                errorForm.loginIsAvailable = true;
+                this.setState({
+                    errorForm: errorForm
+                })
+            } else {
+                errorForm.loginIsAvailable = false;
+                this.setState({
+                    errorForm: errorForm
+                })
+            }
+        });
     }
 
     hasError() {
         const errorForm = this.state.errorForm;
         return !(errorForm.login && errorForm.password && errorForm.confirmPassword &&
             errorForm.email && errorForm.firstName && errorForm.lastName &&
-            errorForm.birthday && errorForm.passwordMatch);
+            errorForm.birthday && errorForm.passwordMatch && errorForm.loginIsAvailable);
     }
 }
 
