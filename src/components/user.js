@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import UserService from "../services/user-service";
 import {Link} from "react-router-dom";
+import history from '../utils/history';
 
 class User extends Component {
 
@@ -29,7 +30,6 @@ class User extends Component {
     }
 
 }
-
 
 
 export default User;

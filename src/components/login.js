@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import UserService from "../services/user-service";
 import {Redirect} from "react-router-dom";
-import history from "../utils/history";
 
 class Login extends Component {
 
@@ -14,7 +13,7 @@ class Login extends Component {
                 password: ''
             },
             role: sessionStorage.getItem('role'),
-            incorrectData: false
+            incorrectData: false,
         };
 
         this.OnChangeLoginLogIn = this.OnChangeLoginLogIn.bind(this);
@@ -37,8 +36,6 @@ class Login extends Component {
                     {this.state.incorrectData ?
                         <div className="alert alert-danger" role="alert">Login or password incorrect</div> : null}
 
-                    {/*<div className="alert alert-danger" role="alert">Login or password incorrect</div>*/}
-
                     <form className="form" onSubmit={this.OnSubmitLogin}>
                         <div className="form-group">
                             <label htmlFor="login">Login:</label>
@@ -60,6 +57,7 @@ class Login extends Component {
     }
 
     OnSubmitLogin(event) {
+        event.preventDefault();
         this.userService.login(this.state.loginForm).then(e => e.json()).then(data => {
             sessionStorage.setItem('token', data.token);
             sessionStorage.setItem('login', data.login);
@@ -71,8 +69,9 @@ class Login extends Component {
                 });
             }
         });
-        history.push("/home");
-        event.preventDefault();
+        setTimeout(() => {
+            this.props.history.push("/home");
+        }, 500);
     }
 
     OnChangePasswordLogIn(e) {
@@ -90,6 +89,7 @@ class Login extends Component {
             loginForm: loginForm
         })
     }
+
 }
 
 export default Login;

@@ -1,6 +1,3 @@
-import * as History from 'history';
-const createBrowserHistory = History.createBrowserHistory;
+import { createBrowserHistory } from 'history';
 
-export default createBrowserHistory({
-    /* pass a configuration object here if needed */
-})
+export default createBrowserHistory();

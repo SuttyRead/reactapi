@@ -2,6 +2,7 @@ import {Component} from 'react';
 import React from "react";
 import UserService from "../services/user-service";
 import {Link, Redirect} from "react-router-dom";
+import {dateValidator, emailValidator, nameValidator, passwordValidator} from "../utils/validator";
 
 class Edit extends Component {
 
@@ -11,9 +12,10 @@ class Edit extends Component {
         this.OnChangeEmailEdit = this.OnChangeEmailEdit.bind(this);
         this.OnChangeBirthdayEdit = this.OnChangeBirthdayEdit.bind(this);
         this.OnChangePasswordEdit = this.OnChangePasswordEdit.bind(this);
-        this.OnChangeLoginEdit = this.OnChangeLoginEdit.bind(this);
+        // this.OnChangeLoginEdit = this.OnChangeLoginEdit.bind(this);
         this.OnChangeFirstNameEdit = this.OnChangeFirstNameEdit.bind(this);
         this.OnChangeLastNameEdit = this.OnChangeLastNameEdit.bind(this);
+        this.OnChangeRoleEdit = this.OnChangeRoleEdit.bind(this);
 
     }
 
@@ -25,11 +27,18 @@ class Edit extends Component {
             firstName: '',
             lastName: '',
             birthday: '',
-            role: {
-                id: '',
-                name: ''
-            },
-        }
+            role: ''
+        },
+        errorForm: {
+            password: true,
+            confirmPassword: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            birthday: true,
+            loginIsAvailable: true,
+            passwordMatch: true
+        },
     };
 
     userService = new UserService();
@@ -37,7 +46,6 @@ class Edit extends Component {
     componentDidMount(): void {
         const id = this.props.match.params.id;
         this.userService.getUserById(id).then(e => e.json()).then(value => {
-            console.log(value);
             this.setState({
                 user: value
             })
@@ -53,8 +61,8 @@ class Edit extends Component {
         if (!this.userService.isAdmin()) {
             return <Redirect to="/home"/>
         }
-
         return (
+
             <div className="col-md-2">
                 <h2 className="text-center">Edit User</h2>
                 <form onSubmit={this.OnSubmitEdit}>
@@ -62,8 +70,7 @@ class Edit extends Component {
                     <div className="form-group">
                         <label htmlFor="login">Login:</label>
                         <input type="text" placeholder="Enter login" name="login" className="form-control" id="login"
-                               defaultValue={this.state.user.login}
-                               onChange={this.OnChangeLoginEdit}
+                               value={this.state.user.login}
                                pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$" readOnly required/>
                     </div>
                     {/*<div className="alert alert-danger" role="alert">*/}
@@ -79,13 +86,10 @@ class Edit extends Component {
                                onChange={this.OnChangePasswordEdit}
                                className="form-control" id="password" required/>
                     </div>
-                    {/*<div className="alert alert-danger" role="alert">Password must be have*/}
-                    {/*lowercase and uppercase Latin letters, number. Minimum 8 characters*/}
-                    {/*</div>*/}
-
-                    {/*<div className="alert alert-danger" role="alert">*/}
-                    {/*Password must be have lowercase and uppercase Latin letters, number. Minimum 8 characters*/}
-                    {/*</div>*/}
+                    {!this.state.errorForm.password ? (
+                        <div className="alert alert-danger" role="alert">Password must be have
+                            lowercase and uppercase Latin letters, number. Minimum 8 characters
+                        </div>) : null}
 
                     <div className="form-group">
                         <label htmlFor="email">Email address:</label>
@@ -95,10 +99,11 @@ class Edit extends Component {
                                pattern="\w+([\.-]?\w+)*@\w+([\.-]?\w+)*\.\w{2,4}"
                                id="email" required/>
                     </div>
-                    {/*<div className="alert alert-danger" role="alert">*/}
-                    {/*Enter correct email. Email*/}
-                    {/*must be have @. For example SuttyRead@gmail.com*/}
-                    {/*</div>*/}
+                    {!this.state.errorForm.email ? (
+                        <div className="alert alert-danger" role="alert">
+                            Enter correct email. Email
+                            must be have @. For example SuttyRead@gmail.com
+                        </div>) : null}
 
                     <div className="form-group">
                         <label htmlFor="firstName">First Name:</label>
@@ -109,10 +114,11 @@ class Edit extends Component {
                                className="form-control"
                                id="firstName" required/>
                     </div>
-                    {/*<div className="alert alert-danger" role="alert">*/}
-                    {/*Only latin letter.*/}
-                    {/*First letter must be uppercase. For example Sutty*/}
-                    {/*</div>*/}
+                    {!this.state.errorForm.firstName ? (
+                        <div className="alert alert-danger" role="alert">
+                            Only latin letter.
+                            First letter must be uppercase. For example Sutty
+                        </div>) : null}
 
                     <div className="form-group">
                         <label htmlFor="lastName">Last Name:</label>
@@ -123,10 +129,11 @@ class Edit extends Component {
                                pattern="^[A-Z]{1}[a-z]{1,25}"
                                id="lastName" required/>
                     </div>
-                    {/*<div className="alert alert-danger" role="alert">*/}
-                    {/*Only latin letter. First letter must be uppercase.*/}
-                    {/*For example Sutty*/}
-                    {/*</div>*/}
+                    {!this.state.errorForm.lastName ? (
+                        <div className="alert alert-danger" role="alert">
+                            Only latin letter.
+                            Last letter must be uppercase. For example Sutty
+                        </div>) : null}
 
                     <div className="form-group">
                         <label htmlFor="birthday">Birthday:</label>
@@ -136,8 +143,14 @@ class Edit extends Component {
                                className="form-control"
                                id="birthday" required/>
                     </div>
+                    {!this.state.errorForm.birthday ? (
+                        <div className="alert alert-danger" role="alert">
+                            Incorrect birthday
+                        </div>) : null}
+
                     <div className='form-group'>
-                        <select className="form-control">
+                        <select className="form-control" value={this.state.user.role.name}
+                                onChange={this.OnChangeRoleEdit}>
                             <option value="ADMIN">Admin</option>
                             <option value="USER">User</option>
                         </select>
@@ -145,7 +158,6 @@ class Edit extends Component {
 
                     <button className="btn btn-success">Save</button>
                     <Link role="button" className="btn btn-success" to="/home">Cancel</Link>
-                    {/*<button onClick= className="btn btn-success">Cancel</button>*/}
 
                 </form>
 
@@ -153,58 +165,91 @@ class Edit extends Component {
         );
     }
 
-    OnChangeLoginEdit(e) {
-        const user = this.state.user;
-        user.login = e.target.value;
-        this.setState({
-            user: user
-        })
-    }
+    // OnChangeLoginEdit(e) {
+    //     const user = this.state.user;
+    //     user.login = e.target.value;
+    //     this.setState({
+    //         user: user
+    //     })
+    // }
 
     OnChangePasswordEdit(e) {
         const user = this.state.user;
         user.password = e.target.value;
+        let errorForm = this.state.errorForm;
+        errorForm.password = passwordValidator(e.target.value);
         this.setState({
+            errorForm: errorForm,
             user: user
-        })
+        });
     }
 
     OnChangeEmailEdit(e) {
         const user = this.state.user;
         user.email = e.target.value;
+        let errorForm = this.state.errorForm;
+        errorForm.email = emailValidator(e.target.value);
         this.setState({
+            errorForm: errorForm,
             user: user
-        })
+        });
     }
 
     OnChangeFirstNameEdit(e) {
         const user = this.state.user;
         user.firstName = e.target.value;
+        let errorForm = this.state.errorForm;
+        errorForm.firstName = nameValidator(e.target.value);
         this.setState({
+            errorForm: errorForm,
             user: user
-        })
+        });
     }
 
     OnChangeLastNameEdit(e) {
         const user = this.state.user;
         user.lastName = e.target.value;
+        let errorForm = this.state.errorForm;
+        errorForm.lastName = nameValidator(e.target.value);
         this.setState({
+            errorForm: errorForm,
             user: user
-        })
+        });
     }
 
     OnChangeBirthdayEdit(e) {
         const user = this.state.user;
         user.birthday = e.target.value;
+        let errorForm = this.state.errorForm;
+        errorForm.birthday = dateValidator(e.target.value);
         this.setState({
+            errorForm: errorForm,
             user: user
-        })
+        });
     }
 
     OnSubmitEdit(event) {
         this.userService.edit(this.state.user);
         console.log(this.state.user);
         event.preventDefault();
+    }
+
+    OnChangeRoleEdit(e) {
+        const user = this.state.user;
+        if (e.target.value === "ADMIN") {
+            user.role = {
+                id: 1,
+                name: "ADMIN"
+            }
+        } else {
+            user.role = {
+                id: 2,
+                name: "USER"
+            }
+        }
+        this.setState({
+            user: user
+        });
     }
 }
 

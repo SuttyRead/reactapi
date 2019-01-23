@@ -17,21 +17,28 @@ class Header extends Component {
             </button>
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mr-auto">
+
                     <li className="nav-item">
                         <Link className="nav-link" to="/">Main</Link>
                     </li>
+
                     {login ? (<li className="nav-item">
                         <Link className="nav-link" to="/registration">Home</Link>
                     </li>) : null}
+
                     {login ? null : (<li className="nav-item">
                         <Link className="nav-link" to="/login">Login</Link>
                     </li>)}
+
                     {login ? null : (<li className="nav-item">
                         <Link className="nav-link" to="/registration">Registration</Link>
                     </li>)}
+
                 </ul>
+
                 {login ? <div>{login}, <Link onClick={() => this.userService.logout()} to="/login"> Logout</Link>
                 </div> : null}
+
             </div>
         </nav>);
     }

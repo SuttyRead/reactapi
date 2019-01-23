@@ -77,6 +77,7 @@ export default class UserService {
     }
 
     isAdmin() {
+        console.log(sessionStorage.getItem('role'));
         return sessionStorage.getItem('role') === "ADMIN";
     }
 

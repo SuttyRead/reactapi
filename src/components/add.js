@@ -33,6 +33,7 @@ class Add extends Component {
             firstName: '',
             lastName: '',
             birthday: ''
+
         },
         errorForm: {
             login: true,
